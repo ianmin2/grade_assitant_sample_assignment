@@ -1,0 +1,22 @@
+module.exports = 
+{
+	user        : 'YOUR_SQL_DB_USERNAME',
+	password    : 'YOUR_SQL_DB_PASSWORD',
+	database    : 'YOUR_DATABSE_NAME',
+	extras      : 
+				{
+					dialect     : 'postgres',   // mssql|postgres|mysql|sqlite
+					dialectOptions: {
+						encrypt: false
+					},
+					host        : 'localhost',
+					logging     : console.dir,
+					pool        :
+								{
+									max     : 100, 
+									min     : 3, 
+									acquire : 30000,  
+									idle    : 10000 
+								}
+				}
+};

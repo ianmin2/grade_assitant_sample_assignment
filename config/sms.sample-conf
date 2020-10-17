@@ -1,0 +1,13 @@
+module.exports = 
+{
+	key         : "SMS_DEVELOPER_KEY",
+	password    : "SMS_ACCESS_PASSWORD",
+	url         : "SMS_ACCESS_URL",
+	queue       : 
+	{
+		interval : 10,
+		send     : 4000,
+		retries  : 10,
+		reporting: 1
+	}
+}
