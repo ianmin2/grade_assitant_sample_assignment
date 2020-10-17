@@ -1,0 +1,9 @@
+module.exports = `\nAn application configuration file is required so as to allow for the sending of SMS messages from mobile applications`.err +
+            `\nTo do this, create an `.yell + `apps.conf` + ` file in the `.yell + `config` + ` folder of your project in the format:`.yell +
+            `\n
+module.exports = 
+[
+	"app.id"
+	,"app.id.2"
+]
+`;

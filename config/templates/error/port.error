@@ -1,0 +1,3 @@
+module.exports =  `A `.err + `port.conf` + ` file containing a numeric port number for the  application's execution is required`.err +
+            `\n\nPlease create a `.yell + `port.conf` + ` file in the config folder of your project.`.yell +
+            `\n\nPlease ensure that the port specified in the `.info + `port.conf` + ` file is numeric otherwise: 🙄 .... rolls-eyes`.info

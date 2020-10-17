@@ -1,0 +1,28 @@
+module.exports = `\nAn email configuration file is required so as to send email messages`.err +
+            `\nTo do this, create a `.yell + `email.conf` + ` file in the `.yell + `config` + ` folder of your project with the content:`.yell +
+            `\ne.g. For mail via gmail, use:`.info +
+            `\n
+module.exports = 
+{
+	connection : 
+	{
+	service: 'gmail',
+	auth: 
+	{
+		user: 'passwordreset@example.com',
+		pass: 'YOUR_EMAIL_PASSWORD'
+	}
+	}
+	,accounts : 
+	{
+	passwords:        "Password Recovery <passwordreset@example.com>",
+	welcome:          "User Accounts <accounts@example.com>",
+	errors:           "Framify Errors <errors@example.com>",
+	notifications:    "Framify Notifications <noreply@example.com>",
+	support:          "Framify Support <support@example.com>"   
+	}
+	, recipient : "administrator@example.com"   //@ The one that receives error messages
+	
+};
+` +
+            `\nPlease visit https://nodemailer.com/about/ for information on other email configuration options\n\n`.yell

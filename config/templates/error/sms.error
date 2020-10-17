@@ -1,0 +1,17 @@
+module.exports = `\nAn SMS configuration file is required so as to send SMS messages`.err +
+            `\nTo do this, create a `.yell + `sms.conf` + ` file in the `.yell + `config` + ` folder of your project with the content:`.yell +
+            `\n
+module.exports = 
+{
+	key         : "SMS_DEVELOPER_KEY",
+	password    : "SMS_ACCESS_PASSWORD",
+	url         : "SMS_ACCESS_URL",
+	queue       : 
+	{
+		interval : 10,
+		send     : 4000,
+		retries  : 10,
+		reporting: 1
+	}
+}
+`;
