@@ -85,7 +85,7 @@ auth.route("/login")
                             var token = jwt.sign(memba, config.secret, { expiresIn: 36000000000000, issuer: myAddr })
 
                             //@ Return the access token to the user
-                            res.status(200).json({ token: `JWT ${token}` });
+                            res.status(200).json({ token });
 
 
                         } else {
@@ -104,28 +104,6 @@ auth.route("/login")
             res.status(401).send(`A username and password are expected for validation.`);
 
         }
-
-    });
-
-//@ SAMPLE PROTECTED ROUTE THAT RETURNS THE LOGED IN USER'S INFORMATION
-auth.route('/me')
-    .all(passport.authenticate('jwt', { session: false }), function(req, res) {
-
-        // console.log(`Attempting a profile data fetch`.info)        
-        $connection.query(`SELECT * FROM vw_members WHERE email=$1 AND active=true`, [req.whoami.email])
-            .then(memberRecord => {
-
-                let l = clone(memberRecord[0]);
-                l.password = undefined;
-                l._id = undefined;
-                l.__v = undefined;
-
-                res.send(make_response(200, l));
-
-            })
-            .catch(e => {
-                res.send(make_response(500, e.message));
-            });
 
     });
 
