@@ -2,7 +2,7 @@
 
 
 ### `Assignment Definition`
-> A sample real world Assignment.
+> A sample real world proof of concept Assignment.
 
 The functionality of the developed grading assistant is tested with a basic configuration matching the below criteria.
 
