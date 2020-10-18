@@ -30,7 +30,7 @@ IF EXISTS( SELECT * FROM  members  )   DROP TABLE  members;
 CREATE TABLE members (
 	member_id		bigint 	    identity(1, 1)  PRIMARY KEY,
 	full_name    varchar(25) 	NOT NULL,
-	username	    varchar(25),
+	username	    varchar(25) CONSTRAINT username_always_required UNIQUE NOT NULL,
 	password	    varchar(500)		    NOT NULL,
 	joined		    DATETIMEOFFSET	    DEFAULT GETDATE(),
 	active 		    bit 	    DEFAULT 1

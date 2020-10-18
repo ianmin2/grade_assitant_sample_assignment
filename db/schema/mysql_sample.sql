@@ -61,7 +61,8 @@ CREATE TABLE `members` (
   `password` TEXT NOT NULL,
   `joined` TIMESTAMP NULL DEFAULT NOW(),
   `active` BOOL DEFAULT 1,
-  PRIMARY KEY (`member_id` ASC)
+  PRIMARY KEY (`member_id` ASC),
+  UNIQUE KEY `username_always_required` (`username`(10) ASC)
 ) DEFAULT CHARSET=utf8 ENGINE=InnoDB;
 
 
