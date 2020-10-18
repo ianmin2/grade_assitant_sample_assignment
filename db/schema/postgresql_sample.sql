@@ -77,7 +77,7 @@ DROP TABLE IF EXISTS members CASCADE;
 CREATE TABLE IF NOT EXISTS members (
 	member_id		bigserial 	    PRIMARY KEY,
 	full_name    varchar(25) 	NOT NULL,
-	username	    varchar(25),  
+	username	    varchar(25) CONSTRAINT username_always_required UNIQUE NOT NULL,  
 	password	    text		    NOT NULL,
 	joined		    TIMESTAMP WITH TIME ZONE	    DEFAULT CURRENT_TIMESTAMP,
 	active 		    boolean 	    DEFAULT true

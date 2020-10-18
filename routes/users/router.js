@@ -1,192 +1,96 @@
 let auth = express.Router();
 
 
-//@ User PRE - REGISTRATION MIDDLEWARE
-var preventRegistrationSpoofing = function(req, res, next) {
-
-    if (req.body.role === "admin") {
-
-        let token = req.headers.authorization
-
-        if (token) {
-            token = token.toString().replace(/JWT /ig, '').replace(/\s/ig, '')
-        }
-
-        //@ Ensure that the provided jwt is valid
-
-        try {
-
-            verifiedJwt = nJwt.verify(token, config.secret);
-
-            //@ Ensure that the trying party is also an administrator
-            if (json(crypt.base64_decode(token.replace(/JWT /ig, '').split(".")[1])).role === "admin") {
-                next();
-            } else {
-                res.json(make_response(500, "You do not meet the minimum requirements to create an administrative user."));
-            }
-
-        } catch (e) {
-            console.log(e);
-            res.send(make_response(500, "Please login to continue"));
-        }
-
-    } else {
-        next();
-    }
-
-};
 
 
 //@ REGISTER NEW USERS
 auth.route("/register")
-    .post(preventRegistrationSpoofing, (req, res) => {
+    .post((req, res) => {
 
-        console.log(`Attempting a registration`.info);
+        c_log(`\n\tAttempting a user registration`.info);
 
         var params = get_params(req);
 
-        if (isDefined(params, "password,email,role,telephone,name.first,account.name")) {
+        if (isDefined(params, "password,username,name")) {
 
-            delete params.password2;
+            //@ md5 is used for its simplicity 
+            //[for rather obvious security purposes, I wouldn't advocate for its use in ANY production-level projects]
             params.password = crypt.md5(params.password);
 
-            // $connection.query(`INSERT INTO members ("name.first","name.last","account.name",email,password,role,telephone) VALUES ($1,$2,$3,$4,$5,$6,$7)`
-            // ,[
-            //     params["name.first"]
-            //     ,params["name.last"]
-            //     ,params["account.name"]
-            //     ,params["email"]
-            //     ,crypt.md5(params["password"])
-            //     ,params["role"]
-            //     ,params["telephone"]
-            // ])
+            $query = `INSERT INTO members (password,username,full_name) VALUES ($1,$2,$3)`;
 
-            $keys = [];
-            $values = [];
-
-            for ($field_name in params) {
-                $keys.push($field_name);
-                $values.push(params[$field_name]);
-            }
-
-            $field_names = "";
-            $field_params = []
-            $field_values = "(";
-
-            for (var i = 0; i < $keys.length; i++) {
-                $field_names += $keys[i] + ',';
-                //    $field_names = ( $keys[i].indexOf('.' == -1) ) ? $keys[i] + ',' : `'${$keys[i]}'` + ','
-
-                $field_params.push(($values[i] || ""));
-                $field_values += "$" + (i + 1) + ",";
-            }
-            $field_values = $field_values.replace(/,$/, ')');
-
-
-            $field_names = $field_names
-                .split(",")
-                .reduce((init, val) => {
-                    return init.concat((val.indexOf(".") === -1) ? val : (`"${val}"`));
-                }, [])
-                .join(",")
-                .replace(/,$/, ')');
-
-            $field_names = `(${$field_names}`;
-
-
-            $query = `INSERT INTO members ${$field_names} VALUES ${$field_values}`;
-
-            // c_log("\n\n")
-            // console.log( $query )
-            // c_log($field_params)
-            // c_log("\n\n")
-
-            $connection.query($query, $field_params)
+            $connection.query($query, [
+                    params.password,
+                    params.username,
+                    params.name
+                ])
                 .then(inserted => {
-                    log(`${inserted}`.succ);
-                    log(`Registered the user ${params["email"]}`.succ);
 
-                    //@ Welcome the user to the by SMS platform 
-                    // mysms.one( { 
-                    //     to:params.telephone, 
-                    //     text: 
-                    //     `Jambo ${params['name.first']}!\nWelcome to lightframe!\nYou may now login https://${myAddr}:${app.port}`
-                    // } ,{ 
-                    //     'user.name': 'userAdmin', 
-                    //     'organization': 1, 
-                    //     'name.first': 'SYSTEM ROBOT ADMINISTRATOR', 
-                    //     'email': 'sms@bixbyte.io',
-                    //     'telephone':'+254725678447'
-                    // })
-                    // .then(()=>{
-                    //     // j_log(a)
-                    //     log(`Successfully sent a welcome SMS to the user ${params['name.first']} (${params.telephone})`.succ);
-                    //     res.json(make_response(200, `Successfully registered ${params['name.first']}.`, params))
-                    // })
-                    // .catch(e=>{
-                    //     c_log(`\n================================================\nERROR AT USER REGISTRATION SMS`.error)
-                    //     j_log(e)
-                    //     c_log(`\n================================================\n`.error)
-                    //     log(`Failed to send a welcome SMS to the user ${params['name.first']} (${params.telephone})`.err);
-                    //     res.json(make_response(200, `Successfully registered ${params['name.first']}.`, params))
-                    // })
+                    c_log(`\n\tUser created! ${inserted}`.succ);
 
-
-                    res.json(make_response(200, `Successfully registered ${params['name.first']}.`, params));
+                    res.status(201).send(`User created!`);
 
                 })
                 .catch(error => {
-                    log(`Failed to register the user ${params['name.first']}.\n\t\t\t\t${str(error.message)}`.err);
-                    // console.dir(error.message)
-                    res.status(500).json(make_response(500, `Failed to record the user. <br><br>Please try changing:<br>1. Email<br>2. Username<br>3. Telephone`, error.message));
+                    console.error(error)
+                    c_log(`\n\tFailed to register the user ${params['name.first']}.\n\t\t${str(error.message)}\n\t\t${error.errors[0].message}`.err);
+                    res.status(400).send(`Failed to record the user. (${error.errors[0].message})`);
                 });
 
         } else {
 
-            res.json(make_response(500, "Please provide both a registration email and password"));
+            res.status(400).send(`A name, username and password are required for a successful registration. We only got ${Object.keys(params).join(' ')}.`);
 
         }
 
     });
 
 //@ AUTHENTICATE THE USER AND ISSUE A jwt
-auth.route("/verify")
-    .all((req, res) => {
+auth.route("/login")
+    .post((req, res) => {
 
-        console.log(`Attempting a login`.info);
+        console.log(`\n\tAttempting a login`.info);
 
         req.body = get_params(req);
 
-        if (isDefined(req.body, "email,password")) {
+        if (isDefined(req.body, "username,password")) {
 
-            $connection.query(`SELECT * FROM vw_members WHERE email=$1`, [req.body.email])
+            $connection.query(`SELECT * FROM vw_members WHERE username=$1`, [req.body.username])
                 .then(user => {
 
+                    //@ Ensure account exists
                     if (!user[0]) {
-                        res.send(make_response(401, "No such user was found", req.body));
-                    } else if (!user[0].active) {
-                        res.send(make_response(401, "Your account has been terminated.<br>Please consult an administrator for assistance.", req.body));
+                        res.status(401).send(`Login for ${req.body.username} failed!`);
+
+
+                    }
+                    //@ Ensure that the account is active 
+                    else if (!user[0].active) {
+                        res.status(401).send(`The account ${req.body.username} has been terminated!`);
                     } else {
 
                         var memba = user[0];
 
+                        //@ Ensure that the passwords match
                         if (memba.password == crypt.md5(req.body.password)) {
 
-                            memba.password = undefined;
-                            memba.transactions = undefined;
+                            //@ Translate the 'full_name' to 'name' [for consistency]
+                            memba.name = `${memba.full_name}`;
 
+                            //@ Hide the password [and full_name] from the world
+                            memba.password = undefined;
+                            memba.full_name = undefined;
+
+                            //@ Generate an accesstoken containing the user data
                             var token = jwt.sign(memba, config.secret, { expiresIn: 36000000000000, issuer: myAddr })
 
-                            res.json(make_response(200, { token: `JWT ${token}` }, {
-                                role: memba.role,
-                                member_id: memba.member_id,
-                                member_name: { first: memba["name.first"], last: memba["name.last"] }
-                            }));
+                            //@ Return the access token to the user
+                            res.status(200).json({ token: `JWT ${token}` });
 
 
                         } else {
 
-                            res.send(make_response(401, "Password does not match."));
+                            res.status(401).send(`Account validation failed!`);
 
                         }
 
@@ -197,7 +101,7 @@ auth.route("/verify")
 
         } else {
 
-            res.send(make_response(500, "Both the email and password are required."));
+            res.status(401).send(`A username and password are expected for validation.`);
 
         }
 
