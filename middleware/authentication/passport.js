@@ -10,13 +10,16 @@ opts.secretOrKey = config.secret;
 // opts.audience = myAddr;
 // opts.issuer = myAddr;
 
-passport.use(new jwtStrategy(opts, (jwt_payload, done) => {
+passport.use(new jwtStrategy(opts, (jwt_payload = {}, done) => {
 
-    console.log(`\n🔍\tAuthentication invoked`.info);
+    console.log(`\n🔍\tAuthentication invoked @passport`.info);
+
+
 
     console.dir(jwt_payload);
 
-    $connection.query('SELECT * FROM vw_members WHERE member_id=$1 AND username=$2 AND active=$3', [jwt_payload.member_id,
+    $connection.query('SELECT * FROM vw_members WHERE member_id=$1 AND username=$2 AND active=$3', [
+            jwt_payload.member_id,
             jwt_payload.username,
             true
         ])
@@ -27,7 +30,7 @@ passport.use(new jwtStrategy(opts, (jwt_payload, done) => {
             if (user) {
                 done(null, user[0]);
             } else {
-                done(null, false);
+                done(err, false);
             }
 
         })
@@ -38,4 +41,4 @@ passport.use(new jwtStrategy(opts, (jwt_payload, done) => {
 }));
 
 
-c_log(`\n✔✔\t`.succ + `Loaded member authentication via sql.`.succ);
+c_log(`\n✔✔\t`.succ + `Loaded member authentication via sql ---.`.succ);
