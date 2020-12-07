@@ -1,5 +1,17 @@
 # Sample grade assistant assignment
 
+Once you've clone dthe repository, navigate to it and on the comand line run
+> `npm install`
+
+then
+
+> `npm run start`
+
+----
+
+### `Note! [Dependency alert]` 
+**The Node.js runtime environment has to be installed on your system prior to running this example** you can download and install hit from [here](https://nodejs.org)
+----
 
 ### `Assignment Definition`
 > A sample real world proof of concept Assignment.

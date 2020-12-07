@@ -15,9 +15,17 @@ function getService(service_id) {
     )
 }
 
+function ensuremiddleWareExists(req, res, next) {
+    if (!req.FRAMIFY_USER_INFO) {
+        req.FRAMIFY_USER_INFO = {};
+    }
+    next();
+}
 
 servicesRouter.route('/')
-    .get((req, res) => {
+    .get(ensuremiddleWareExists, (req, res) => {
+
+        c_log(`\n⚙️\tAttempting to fetch a list of services for ${req.FRAMIFY_USER_INFO.username}`.info);
 
         //@ Attempt to fetch all the data
         $connection.query(`SELECT * FROM vw_services`, [])
@@ -30,7 +38,7 @@ servicesRouter.route('/')
                 c_log(`\n❌📝\tFailed to send a list of services to ${req.FRAMIFY_USER_INFO.username}.\n\t${err.message}`.err);
             });
     })
-    .post((req, res) => {
+    .post(ensuremiddleWareExists, (req, res) => {
 
         c_log(`\n⚙️\tAttempting to add a service for ${req.FRAMIFY_USER_INFO.username}`.info);
 
@@ -56,7 +64,7 @@ servicesRouter.route('/')
         }
         //@ Fail gracefully
         else {
-            res.status(404).send(`The 'service_name', 'service_fee', 'service_code' and 'service_active' service attributes are all required.`);
+            res.status(400).send(`The 'service_name', 'service_fee', 'service_code' and 'service_active' service attributes are all required.`);
             c_log(`\n❌⚙️\tFailed to add a service for ${req.FRAMIFY_USER_INFO.username} due to insufficient service data`);
         }
 
@@ -64,7 +72,9 @@ servicesRouter.route('/')
 
 
 servicesRouter.route('/:service_id')
-    .get((req, res) => {
+    .get(ensuremiddleWareExists, (req, res) => {
+
+        c_log(`\n⚙️\tAttempting to fetch service #${req.params.service_id} for ${req.FRAMIFY_USER_INFO.username}`.info);
 
         //@ Ensure that the passed service identifier is numeric
         req.params.service_id = parseInt(req.params.service_id);
@@ -96,7 +106,9 @@ servicesRouter.route('/:service_id')
         }
 
     })
-    .put((req, res) => {
+    .put(ensuremiddleWareExists, (req, res) => {
+
+        c_log(`\n⚙️\tAttempting to update service #${req.params.service_id} for ${req.FRAMIFY_USER_INFO.username}`.info);
 
         //@ Ensure that the passed service identifier is numeric
         req.params.service_id = parseInt(req.params.service_id);
@@ -149,7 +161,10 @@ servicesRouter.route('/:service_id')
         }
 
     })
-    .delete((req, res) => {
+    .delete(ensuremiddleWareExists, (req, res) => {
+
+        c_log(`\n⚙️\tAttempting to delete service #${req.params.service_id} for ${req.FRAMIFY_USER_INFO.username}`.info);
+
         //@ Ensure that the passed service identifier is numeric
         req.params.service_id = parseInt(req.params.service_id);
 
