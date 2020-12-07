@@ -8,9 +8,12 @@ then
 > `npm run start`
 
 ----
+----
 
 ### `Note! [Dependency alert]` 
-**The Node.js runtime environment has to be installed on your system prior to running this example** you can download and install hit from [here](https://nodejs.org)
+**The Node.js runtime environment has to be installed on your system prior to running this example** you can download and install hit from [here](https://nodejs.org) (https://nodejs.org)
+
+----
 ----
 
 ### `Assignment Definition`
