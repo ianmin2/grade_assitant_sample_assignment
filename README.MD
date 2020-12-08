@@ -7,6 +7,8 @@ then
 
 > `npm run start`
 
+>  you can find the application access logs at  *`middleware > logger > access.log`*
+
 **On the first run**, you need to define some configuration files, the CLI will guide you on this.
 
 ### The database schema can be found in the folder *`db > schema`*  (there are sample SQL schemas provided for [**mySQL**](db/schema/mysql_sample.sql), [**postgres**](db/schema/postgresql_sample.sql) and [**SQLServer**](db/schema/sql_server_sample.sql) )
