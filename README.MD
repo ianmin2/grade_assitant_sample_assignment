@@ -7,6 +7,10 @@ then
 
 > `npm run start`
 
+**On the first run**, you need to define some configuration files, the CLI will guide you on this.
+
+### The database schema can be found in the folder *`db > schema`*  (there are sample SQL schemas provided for **mySQL**, **postgres** and **SQLServer**)
+
 ----
 ----
 
