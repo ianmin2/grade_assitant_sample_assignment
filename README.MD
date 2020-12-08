@@ -104,4 +104,4 @@ ___
 ### `Insomnia Environment Export `
 
 [Download Insomnia REST Client to manualy verify application functionality ](https://insomnia.rest/download/core/?&ref=)
-> You can get the insomnia environment [here](./insomnia_client__export.json)
+> You can get the insomnia environment [here](bytegrader_sample_assignment_insomnia_client_export.json)
